@@ -1,7 +1,7 @@
 """ Main file for crtime """
 
 __project__ = "crtime"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __repo__ = "https://github.com/kootenpv/crtime"
 
 import time
