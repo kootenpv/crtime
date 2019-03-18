@@ -1,6 +1,5 @@
 ## crtime
 
-[![Build Status](https://travis-ci.org/kootenpv/crtime.svg?branch=master)](https://travis-ci.org/kootenpv/crtime)
 [![PyPI](https://img.shields.io/pypi/v/crtime.svg?style=flat-square)](https://pypi.python.org/pypi/crtime/)
 [![PyPI](https://img.shields.io/pypi/pyversions/crtime.svg?style=flat-square)](https://pypi.python.org/pypi/crtime/)
 
@@ -30,9 +29,9 @@ crtime .
 In Python
 
 ```python
-from crtime import get_ctimes_in_dir
+from crtime import get_crtimes_in_dir
 
-for fname, date in get_ctimes_in_dir(".", raise_on_error=True, as_epoch=False):
+for fname, date in get_crtimes_in_dir(".", raise_on_error=True, as_epoch=False):
     print(fname, date)
 # file_a.py Mon Mar 18 20:51:18 CET 2019
 ```

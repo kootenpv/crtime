@@ -1,7 +1,7 @@
 """ Main file for crtime """
 
 __project__ = "crtime"
-__version__ = "0.0.0"
+__version__ = "0.0.1"
 __repo__ = "https://github.com/kootenpv/crtime"
 
 import time
@@ -30,14 +30,14 @@ def parse_output(output, as_epoch):
         if line.startswith("debugfs: stat"):
             fname = line[14:]
         elif line.startswith("crtime:"):
-            ctime = line.split("-- ")[1]
+            crtime = line.split("-- ")[1]
             if as_epoch:
-                ctime = int(time.mktime(time.strptime(ctime)))
-            results[fname.strip('"')] = ctime
+                crtime = int(time.mktime(time.strptime(crtime)))
+            results[fname.strip('"')] = crtime
     return results
 
 
-def get_ctimes(fnames, raise_on_error=True, as_epoch=False):
+def get_crtimes(fnames, raise_on_error=True, as_epoch=False):
     if system != "Linux":
         return [(fname, os.stat(fname).st_birthtime) for fname in fnames]
 
@@ -52,14 +52,14 @@ def get_ctimes(fnames, raise_on_error=True, as_epoch=False):
         for fname in fnames:
             if fname in results:
                 continue
-            raise ValueError('filename "{}" does not have a ctime'.format(fname))
+            raise ValueError('filename "{}" does not have a crtime'.format(fname))
     return [(fname, results.get(fname)) for fname in fnames]
 
 
-def get_ctimes_in_dir(directory, raise_on_error=True, as_epoch=False):
+def get_crtimes_in_dir(directory, raise_on_error=True, as_epoch=False):
     if not directory.endswith("/"):
         directory = directory + "/"
-    return get_ctimes([directory + x for x in os.listdir(directory)], raise_on_error, as_epoch)
+    return get_crtimes([directory + x for x in os.listdir(directory)], raise_on_error, as_epoch)
 
 
 def format_results(results):
@@ -68,7 +68,7 @@ def format_results(results):
 
 def main():
     base = os.path.abspath(sys.argv[-1])
-    print(format_results(get_ctimes_in_dir(base, as_epoch=True, raise_on_error=False)))
+    print(format_results(get_crtimes_in_dir(base, as_epoch=True, raise_on_error=False)))
 
 
 if __name__ == "__main__":
