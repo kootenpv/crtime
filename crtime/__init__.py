@@ -45,7 +45,8 @@ def get_crtimes(fnames, raise_on_error=True, as_epoch=False):
         f.write(("\n".join('stat "{}"'.format(x) for x in fnames) + "\n").encode())
         f.flush()
         cmd = ["debugfs", "-f", f.name, get_device(fnames[0])]
-        output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
+        with open(os.devnull, "w") as devnull:
+            output = subprocess.check_output(cmd, stderr=devnull)
         results = parse_output(output.decode("utf8"), as_epoch)
 
     if raise_on_error:
