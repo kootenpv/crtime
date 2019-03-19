@@ -12,14 +12,14 @@ import tempfile
 import platform
 
 system = platform.system()
-if system == "Linux" and not os.environ.get("SUDO_USER"):
+if system == "Linux" and not os.environ.get("SUDO_USER", False):
     raise ValueError("Should be run as sudo user on linux")
 
 
 def get_device(fname):
     df = subprocess.Popen(["df", fname], stdout=subprocess.PIPE)
     output = df.communicate()[0]
-    device, _, _, _, _, _ = output.decode("utf8").split("\n")[1].split()
+    device = output.decode("utf8").split("\n")[1].split()[0]
     return device
 
 
@@ -42,12 +42,12 @@ def get_crtimes(fnames, raise_on_error=True, as_epoch=False):
         return [(fname, os.stat(fname).st_birthtime) for fname in fnames]
 
     with tempfile.NamedTemporaryFile() as f:
-        f.write(("\n".join('stat "' + x + '"' for x in fnames) + "\n").encode())
+        f.write(("\n".join('stat "{}"'.format(x) for x in fnames) + "\n").encode())
         f.flush()
         cmd = ["debugfs", "-f", f.name, get_device(fnames[0])]
-        with open(os.devnull, 'w') as devnull:
-            output = subprocess.check_output(cmd, stderr=devnull)
+        output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
         results = parse_output(output.decode("utf8"), as_epoch)
+
     if raise_on_error:
         for fname in fnames:
             if fname in results:
